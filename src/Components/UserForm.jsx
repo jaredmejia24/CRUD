@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import ClipLoader from "react-spinners/ClipLoader";
 
 const override = {
@@ -8,54 +9,42 @@ const override = {
 };
 
 const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
-  const [firstName, setFirstName] = useState("");
-
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [birthday, setBirthday] = useState("");
   const [isFormloading, setIsFormLoading] = useState(true);
-  
-  console.log("seleceted user");
-  console.log(selectedUser);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm();
 
   useEffect(() => {
     if (selectedUser !== null) {
-      setFirstName(selectedUser.first_name);
-      setLastName(selectedUser.last_name);
-      setEmail(selectedUser.email);
-      setPassword(selectedUser.password);
-      setBirthday(selectedUser.birthday);
+      reset(selectedUser);
       setIsFormLoading(false);
     } else {
       setIsFormLoading(false);
-      reset();
+      autofill();
     }
   }, [selectedUser]);
 
-  const reset = () => {
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setBirthday("");
+  const autofill = () => {
+    reset({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      birthday: "",
+    });
   };
 
-  const sumbitForm = (e) => {
-    e.preventDefault();
-    const userObject = {
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      password: password,
-      birthday: birthday,
-    };
+  const sumbitForm = (data) => {
     if (selectedUser === null) {
-      addUser(userObject);
-      reset();
+      addUser(data);
+      autofill();
     } else {
-      updateUser(selectedUser.id, userObject);
+      updateUser(selectedUser.id, data);
     }
+  };
+
+  const tooglePassword = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
@@ -65,7 +54,7 @@ const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
       ) : (
         <>
           <h1 className="title">New User</h1>
-          <form onSubmit={sumbitForm}>
+          <form onSubmit={handleSubmit(sumbitForm)}>
             <i
               style={{ order: "1", alignSelf: "center" }}
               className="fa-solid fa-user"
@@ -73,15 +62,13 @@ const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
             <div className="inputNames" style={{ order: "2" }}>
               <input
                 required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                {...register("first_name")}
                 type="text"
                 placeholder="first name"
               />
               <input
                 required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                {...register("last_name")}
                 type="text"
                 placeholder="last name"
               />
@@ -90,26 +77,37 @@ const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
             <input
               required
               style={{ order: "4" }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
               type="email"
               placeholder="email"
             />
             <i style={{ order: "5" }} className="fa-solid fa-lock"></i>
-            <input
-              required
-              style={{ order: "6" }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="password"
-            />
+            <div className="password-div" style={{ order: "6" }}>
+              <input
+                required
+                {...register("password")}
+                type={isPasswordVisible ? "text" : "password"}
+                placeholder="password"
+              />
+              {isPasswordVisible ? (
+                <i
+                  onClick={tooglePassword}
+                  style={{ alignSelf: "center", justifySelf: "center" }}
+                  className="fa-regular fa-eye"
+                ></i>
+              ) : (
+                <i
+                  onClick={tooglePassword}
+                  style={{ alignSelf: "center", justifySelf: "center" }}
+                  className="fa-regular fa-eye-slash"
+                ></i>
+              )}
+            </div>
             <i style={{ order: "7" }} className="fa-solid fa-cake-candles"></i>
             <input
               required
               style={{ order: "8" }}
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
+              {...register("birthday")}
               type="date"
             />
             <button

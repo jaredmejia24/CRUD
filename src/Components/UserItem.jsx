@@ -1,6 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
+import Modal from "react-modal";
+import UserForm from "./UserForm";
 
-const UserItem = ({ user, deleteUser, selectUser }) => {
+Modal.setAppElement("#root");
+
+const modalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
+const UserItem = ({ user, deleteUser, selectUser, cancelUpdate }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="user-list">
       <h3>
@@ -14,7 +39,10 @@ const UserItem = ({ user, deleteUser, selectUser }) => {
           className="fa-solid fa-trash"
         ></i>
         <i
-          onClick={() => selectUser(user)}
+          onClick={() => {
+            openModal();
+            selectUser(user);
+          }}
           style={{ cursor: "pointer" }}
           className="fa-solid fa-pencil"
         ></i>
@@ -23,6 +51,16 @@ const UserItem = ({ user, deleteUser, selectUser }) => {
         <i className="fa-solid fa-cake-candles"></i>
         <p>{user.birthday}</p>
       </div>
+      <Modal
+      style={modalStyles}
+        onRequestClose={() => {
+          closeModal();
+          cancelUpdate();
+        }}
+        isOpen={isModalOpen}
+      >
+        <UserForm />
+      </Modal>
     </div>
   );
 };

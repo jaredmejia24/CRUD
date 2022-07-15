@@ -49,14 +49,13 @@ function App() {
     setSelectedUser(null);
   }
 
-  console.log(users);
   return (
     <div className="adjust-components">
       <div className="form-component">
         <UserForm users={users} cancelUpdate={cancelUpdate} updateUser={updateUser} selectedUser={selectedUser} addUser={addUser} />
       </div>
       <div className="user-component">
-        <UserList selectUser={selectUser} deleteUser={deleteUser} users={users} />
+        <UserList cancelUpdate={cancelUpdate} selectUser={selectUser} deleteUser={deleteUser} users={users} />
       </div>
     </div>
   );
