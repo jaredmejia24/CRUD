@@ -67,7 +67,7 @@ const UserItem = ({ user, deleteUser, updateUser }) => {
       </div>
       <div className="list-date">
         <i className="fa-solid fa-cake-candles"></i>
-        <p>{user.birthday}</p>
+        <p style={{alignSelf: "end"}}>{user.birthday}</p>
       </div>
       <Modal
         style={modalStyles}
