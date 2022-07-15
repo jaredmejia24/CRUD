@@ -106,6 +106,14 @@ button:hover{
     gap: 1rem;
 }
 
+.modal-form{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    height: max-content !important;
+    padding: 2rem 4rem !important;
+}
+
 @media (min-width: 576px) {
     .inputNames {
         display: flex;

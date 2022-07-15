@@ -1,28 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import ClipLoader from "react-spinners/ClipLoader";
 
-const override = {
-  display: "flex",
-  margin: "auto",
-  borderColor: "black",
-};
-
-const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
-  const [isFormloading, setIsFormLoading] = useState(true);
+const UserForm = ({ addUser}) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const { register, handleSubmit, reset } = useForm();
-
-  useEffect(() => {
-    if (selectedUser !== null) {
-      reset(selectedUser);
-      setIsFormLoading(false);
-    } else {
-      setIsFormLoading(false);
-      autofill();
-    }
-  }, [selectedUser]);
 
   const autofill = () => {
     reset({
@@ -35,12 +17,8 @@ const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
   };
 
   const sumbitForm = (data) => {
-    if (selectedUser === null) {
-      addUser(data);
-      autofill();
-    } else {
-      updateUser(selectedUser.id, data);
-    }
+    addUser(data);
+    autofill();
   };
 
   const tooglePassword = () => {
@@ -49,89 +27,72 @@ const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
 
   return (
     <div className="form">
-      {isFormloading ? (
-        <ClipLoader cssOverride={override} size={160} />
-      ) : (
-        <>
-          <h1 className="title">New User</h1>
-          <form onSubmit={handleSubmit(sumbitForm)}>
+      <h1 className="title">New User</h1>
+      <form onSubmit={handleSubmit(sumbitForm)}>
+        <i
+          style={{ order: "1", alignSelf: "center" }}
+          className="fa-solid fa-user"
+        ></i>
+        <div className="inputNames" style={{ order: "2" }}>
+          <input
+            required
+            {...register("first_name")}
+            type="text"
+            placeholder="first name"
+          />
+          <input
+            required
+            {...register("last_name")}
+            type="text"
+            placeholder="last name"
+          />
+        </div>
+        <i style={{ order: "3" }} className="fa-solid fa-envelope"></i>
+        <input
+          required
+          style={{ order: "4" }}
+          {...register("email")}
+          type="email"
+          placeholder="email"
+        />
+        <i style={{ order: "5" }} className="fa-solid fa-lock"></i>
+        <div className="password-div" style={{ order: "6" }}>
+          <input
+            required
+            {...register("password")}
+            type={isPasswordVisible ? "text" : "password"}
+            placeholder="password"
+          />
+          {isPasswordVisible ? (
             <i
-              style={{ order: "1", alignSelf: "center" }}
-              className="fa-solid fa-user"
+              onClick={tooglePassword}
+              style={{ alignSelf: "center", justifySelf: "center" }}
+              className="fa-regular fa-eye"
             ></i>
-            <div className="inputNames" style={{ order: "2" }}>
-              <input
-                required
-                {...register("first_name")}
-                type="text"
-                placeholder="first name"
-              />
-              <input
-                required
-                {...register("last_name")}
-                type="text"
-                placeholder="last name"
-              />
-            </div>
-            <i style={{ order: "3" }} className="fa-solid fa-envelope"></i>
-            <input
-              required
-              style={{ order: "4" }}
-              {...register("email")}
-              type="email"
-              placeholder="email"
-            />
-            <i style={{ order: "5" }} className="fa-solid fa-lock"></i>
-            <div className="password-div" style={{ order: "6" }}>
-              <input
-                required
-                {...register("password")}
-                type={isPasswordVisible ? "text" : "password"}
-                placeholder="password"
-              />
-              {isPasswordVisible ? (
-                <i
-                  onClick={tooglePassword}
-                  style={{ alignSelf: "center", justifySelf: "center" }}
-                  className="fa-regular fa-eye"
-                ></i>
-              ) : (
-                <i
-                  onClick={tooglePassword}
-                  style={{ alignSelf: "center", justifySelf: "center" }}
-                  className="fa-regular fa-eye-slash"
-                ></i>
-              )}
-            </div>
-            <i style={{ order: "7" }} className="fa-solid fa-cake-candles"></i>
-            <input
-              required
-              style={{ order: "8" }}
-              {...register("birthday")}
-              type="date"
-            />
-            <button
-              style={{
-                order: "9",
-                gridColumn: selectedUser !== null ? "2/3" : "",
-              }}
-              className="form-btn"
-            >
-              {selectedUser === null ? "Create" : "Update"}
-            </button>
-            {selectedUser !== null && (
-              <button
-                onClick={cancelUpdate}
-                type="button"
-                className="form-btn cancel-btn"
-                style={{ order: "10" }}
-              >
-                Cancel
-              </button>
-            )}
-          </form>
-        </>
-      )}
+          ) : (
+            <i
+              onClick={tooglePassword}
+              style={{ alignSelf: "center", justifySelf: "center" }}
+              className="fa-regular fa-eye-slash"
+            ></i>
+          )}
+        </div>
+        <i style={{ order: "7" }} className="fa-solid fa-cake-candles"></i>
+        <input
+          required
+          style={{ order: "8" }}
+          {...register("birthday")}
+          type="date"
+        />
+        <button
+          style={{
+            order: "9",
+          }}
+          className="form-btn"
+        >
+          Create
+        </button>
+      </form>
     </div>
   );
 };
