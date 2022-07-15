@@ -6,7 +6,6 @@ import UserList from "./Components/UserList";
 
 function App() {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     axios
@@ -33,30 +32,20 @@ function App() {
       .then(() => getUsers());
   };
 
-
-  const selectUser = userObject =>{
-    setSelectedUser(userObject);
-  }
-
   const updateUser = (id, userObject) => {
     axios
       .put(`https://users-crud1.herokuapp.com/users/${id}/`, userObject)
       .then(() => getUsers());
-    setSelectedUser(null)
   }
 
-  const cancelUpdate = () =>{
-    setSelectedUser(null);
-  }
 
-  console.log(users);
   return (
     <div className="adjust-components">
       <div className="form-component">
-        <UserForm users={users} cancelUpdate={cancelUpdate} updateUser={updateUser} selectedUser={selectedUser} addUser={addUser} />
+        <UserForm addUser={addUser} />
       </div>
       <div className="user-component">
-        <UserList selectUser={selectUser} deleteUser={deleteUser} users={users} />
+        <UserList updateUser={updateUser} deleteUser={deleteUser} users={users} />
       </div>
     </div>
   );

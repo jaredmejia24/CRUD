@@ -1,139 +1,98 @@
 import React, { useEffect, useState } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
+import { useForm } from "react-hook-form";
 
-const override = {
-  display: "flex",
-  margin: "auto",
-  borderColor: "black",
-};
+const UserForm = ({ addUser}) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-const UserForm = ({ addUser, selectedUser, updateUser, cancelUpdate }) => {
-  const [firstName, setFirstName] = useState("");
+  const { register, handleSubmit, reset } = useForm();
 
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [birthday, setBirthday] = useState("");
-  const [isFormloading, setIsFormLoading] = useState(true);
-  
-  console.log("seleceted user");
-  console.log(selectedUser);
-
-  useEffect(() => {
-    if (selectedUser !== null) {
-      setFirstName(selectedUser.first_name);
-      setLastName(selectedUser.last_name);
-      setEmail(selectedUser.email);
-      setPassword(selectedUser.password);
-      setBirthday(selectedUser.birthday);
-      setIsFormLoading(false);
-    } else {
-      setIsFormLoading(false);
-      reset();
-    }
-  }, [selectedUser]);
-
-  const reset = () => {
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
-    setBirthday("");
+  const autofill = () => {
+    reset({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      birthday: "",
+    });
   };
 
-  const sumbitForm = (e) => {
-    e.preventDefault();
-    const userObject = {
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      password: password,
-      birthday: birthday,
-    };
-    if (selectedUser === null) {
-      addUser(userObject);
-      reset();
-    } else {
-      updateUser(selectedUser.id, userObject);
-    }
+  const sumbitForm = (data) => {
+    addUser(data);
+    autofill();
+  };
+
+  const tooglePassword = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
     <div className="form">
-      {isFormloading ? (
-        <ClipLoader cssOverride={override} size={160} />
-      ) : (
-        <>
-          <h1 className="title">New User</h1>
-          <form onSubmit={sumbitForm}>
+      <h1 className="title">New User</h1>
+      <form onSubmit={handleSubmit(sumbitForm)}>
+        <i
+          style={{ order: "1", alignSelf: "center" }}
+          className="fa-solid fa-user"
+        ></i>
+        <div className="inputNames" style={{ order: "2" }}>
+          <input
+            required
+            {...register("first_name")}
+            type="text"
+            placeholder="first name"
+          />
+          <input
+            required
+            {...register("last_name")}
+            type="text"
+            placeholder="last name"
+          />
+        </div>
+        <i style={{ order: "3" }} className="fa-solid fa-envelope"></i>
+        <input
+          required
+          style={{ order: "4" }}
+          {...register("email")}
+          type="email"
+          placeholder="email"
+        />
+        <i style={{ order: "5" }} className="fa-solid fa-lock"></i>
+        <div className="password-div" style={{ order: "6" }}>
+          <input
+            required
+            {...register("password")}
+            type={isPasswordVisible ? "text" : "password"}
+            placeholder="password"
+          />
+          {isPasswordVisible ? (
             <i
-              style={{ order: "1", alignSelf: "center" }}
-              className="fa-solid fa-user"
+              onClick={tooglePassword}
+              style={{ alignSelf: "center", justifySelf: "center" }}
+              className="fa-regular fa-eye"
             ></i>
-            <div className="inputNames" style={{ order: "2" }}>
-              <input
-                required
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                type="text"
-                placeholder="first name"
-              />
-              <input
-                required
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                type="text"
-                placeholder="last name"
-              />
-            </div>
-            <i style={{ order: "3" }} className="fa-solid fa-envelope"></i>
-            <input
-              required
-              style={{ order: "4" }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder="email"
-            />
-            <i style={{ order: "5" }} className="fa-solid fa-lock"></i>
-            <input
-              required
-              style={{ order: "6" }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="password"
-            />
-            <i style={{ order: "7" }} className="fa-solid fa-cake-candles"></i>
-            <input
-              required
-              style={{ order: "8" }}
-              value={birthday}
-              onChange={(e) => setBirthday(e.target.value)}
-              type="date"
-            />
-            <button
-              style={{
-                order: "9",
-                gridColumn: selectedUser !== null ? "2/3" : "",
-              }}
-              className="form-btn"
-            >
-              {selectedUser === null ? "Create" : "Update"}
-            </button>
-            {selectedUser !== null && (
-              <button
-                onClick={cancelUpdate}
-                type="button"
-                className="form-btn cancel-btn"
-                style={{ order: "10" }}
-              >
-                Cancel
-              </button>
-            )}
-          </form>
-        </>
-      )}
+          ) : (
+            <i
+              onClick={tooglePassword}
+              style={{ alignSelf: "center", justifySelf: "center" }}
+              className="fa-regular fa-eye-slash"
+            ></i>
+          )}
+        </div>
+        <i style={{ order: "7" }} className="fa-solid fa-cake-candles"></i>
+        <input
+          required
+          style={{ order: "8" }}
+          {...register("birthday")}
+          type="date"
+        />
+        <button
+          style={{
+            order: "9",
+          }}
+          className="form-btn"
+        >
+          Create
+        </button>
+      </form>
     </div>
   );
 };

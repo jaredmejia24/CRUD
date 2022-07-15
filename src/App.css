@@ -101,6 +101,18 @@ button:hover{
     grid-column: 1/2;
     grid-row: 5/6;
 }
+.password-div{
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-form{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    height: max-content !important;
+    padding: 2rem 4rem !important;
+}
 
 @media (min-width: 576px) {
     .inputNames {
@@ -169,7 +181,7 @@ button:hover{
     }
 }
 
-@media (min-width: 1170px){
+@media (min-width: 1500px){
     .adjust-components{
         grid-template-columns: 2fr 1fr;
     }
